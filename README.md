@@ -7,13 +7,11 @@ This guide explains how to deploy Apache Kafka using the Bitnami Helm chart in a
 
 ## Table of Contents
 1. [Prerequisites](#prerequisites)
-2. [Architectural Consideration](#architectural-consideration) 
-3. [Configurations](#configuration)  
+2. [Architectural Consideration](#architectural-consideration)
+3. [Configurations](#configurations)  
 4. [Installation Steps](#installation-steps)
-5. [Accessing Kafka](#kafka-access)
-6. [Testing Kafka](#testing-kafka)  
-7. [Troubleshooting](#troubleshooting)  
-8. [Resources](#resources)
+5. [Testing Kafka](#testing-kafka)
+6. [Reference](#reference)
 
 ---
 
@@ -24,21 +22,24 @@ This guide explains how to deploy Apache Kafka using the Bitnami Helm chart in a
 
 2. ### Helm  
    Install Helm (v3 or later):  
+   ```bash
    curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+   ****
 
-3. ### Bitnami Repository
+4. ### Bitnami Repository
 ```bash
    helm repo add bitnami https://charts.bitnami.com/bitnami
    helm repo update
 ```
 3. ### Loadbalancer 
-   Ensure that static ip for kafka broker and controllers are available as those IPs will be used to expose broker and controller outside of od kubernetes clsuter by loadbalancer
+   Ensure that static ip for kafka broker and controllers are available as those IPs will be used to expose broker and controller outside of od Kubernetes cluster by loadbalancer
 
 ## Architectural Consideration
 1. #### Version
    KRAft will be used for kafka installation 
 2. #### Data Replication  
-   Data will be replicated synchronously across different data centers based on kafka stretched cluster architecture. Controllers acroiss both data centers will be conntected based on exposed loadbalancer service of controller
+   Data will be replicated synchronously across different data centers based on kafka stretched cluster architecture. Controllers acroiss both data centers will 
+   be conntected based on exposed loadbalancer service of controller
 3. #### Authentication
    Kafka will have security authentication for both SASL and PlainText. For SASL, Custom authentication will be implemented based on LDAP
 4. #### Authorization
@@ -136,7 +137,7 @@ externalAccess:
     .   
 ```
 #### Authentication and Authorizaton
-   1. Add SASL as authentication and PLLAINTEXT as encryption. So security protocol for corresponding listener (external) will be SASL_PLAINTEXT
+   1. Add SASL as authentication and PLAINTEXT as encryption. So security protocol for corresponding listener (external) will be SASL_PLAINTEXT
    ```bash
      external:
        containerPort: 9095
@@ -166,7 +167,7 @@ externalAccess:
     enabled: true
     existingClusterIdSecret: ""
     clusterId: "2365172653715237"
-    controllerQuorumVoters: "1@34.56.35.87:29092"
+    controllerQuorumVoters: "1@34.56.35.87:29092,2@34.66.24.154:29092"
 ```
 #### Metrics
 1. Enable JMX service
@@ -198,8 +199,8 @@ externalAccess:
 ```bash
   helm install kafka-cluster bitnami/kafka –namespace kafka –values dc1-kafka-values.yaml or dc2-kafka-values.yaml
 ```
-## Testing
-  Below are fer commands to verify ACl, topic 
+## Testing Kafka
+  Below are few commands to verify ACl, topic 
   ```bash
    #SASL
 export BOOTSTRAP_SERVER=34.27.186.200:9095,34.66.24.154:9095
@@ -251,5 +252,5 @@ export BOOTSTRAP_SERVER=34.55.229.28:9097,35.225.25.157:9097
 ./bin/kafka-topics.sh --bootstrap-server $BOOTSTRAP_SERVER --list --command-config client.properties
   ```
 
-
- 
+## Reference 
+[Bitnami Kafka Helm Chart](https://bitnami.com/stack/kafka/helm)
