@@ -37,4 +37,4 @@ jobs:
 
       - name: Verify Kafka User
         run: |
-          kafka/bin/kafka-configs.sh --bootstrap-server $KAFKA_BROKER --describe --entity-type users --command-config kafka_admin.properties
+          kafka/bin/kafka-configs.sh --bootstrap-server $KAFKA_BROKER  --describe  --entity-type users --command-config kafka_admin.properties
