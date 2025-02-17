@@ -36,5 +36,7 @@ jobs:
             --command-config kafka_admin.properties
 
       - name: Verify Kafka User
+        env:
+          KAFKA_BROKER: ${{ secrets.KAFKA_BROKER }}
         run: |
           kafka/bin/kafka-configs.sh --bootstrap-server $KAFKA_BROKER  --describe  --entity-type users --command-config kafka_admin.properties
