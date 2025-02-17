@@ -21,7 +21,7 @@ jobs:
       - name: Create Kafka Config File
         run: |
           echo "security.protocol=SASL_PLAINTEXT" >> kafka_admin.properties
-          echo "sasl.mechanism=SCRAM-SHA-512" >> kafka_admin.properties
+          echo "sasl.mechanism=SCRAM-SHA-256" >> kafka_admin.properties
           echo "sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=\"${{ secrets.KAFKA_ADMIN_USER }}\" password=\"${{ secrets.KAFKA_ADMIN_PASSWORD }}\";" >> kafka_admin.properties
 
       - name: Create Kafka User
