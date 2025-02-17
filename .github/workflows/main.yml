@@ -1,10 +1,7 @@
 name: Kafka User Management
 
 on:
-  workflow_dispatch:  # Allows manual trigger
-  push:
-    branches:
-      - main  # Runs when pushing to main branch
+  workflow_dispatch:
 
 jobs:
   create-kafka-user:
@@ -21,6 +18,12 @@ jobs:
           mv kafka_2.13-3.6.0 kafka
           echo "$(pwd)/kafka/bin" >> $GITHUB_PATH
 
+      - name: Create Kafka Config File
+        run: |
+          echo "security.protocol=SASL_PLAINTEXT" >> kafka_admin.properties
+          echo "sasl.mechanism=SCRAM-SHA-512" >> kafka_admin.properties
+          echo "sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username=\"${{ secrets.KAFKA_ADMIN_USER }}\" password=\"${{ secrets.KAFKA_ADMIN_PASSWORD }}\";" >> kafka_admin.properties
+
       - name: Create Kafka User
         env:
           KAFKA_BROKER: ${{ secrets.KAFKA_BROKER }}
@@ -29,8 +32,10 @@ jobs:
         run: |
           kafka/bin/kafka-configs.sh --bootstrap-server $KAFKA_BROKER \
             --alter --add-config "SCRAM-SHA-512=[iterations=4096,password=$KAFKA_PASSWORD]" \
-            --entity-type users --entity-name $KAFKA_USER
+            --entity-type users --entity-name $KAFKA_USER \
+            --command-config kafka_admin.properties
 
       - name: Verify Kafka User
         run: |
-          kafka/bin/kafka-configs.sh --bootstrap-server $KAFKA_BROKER --describe --entity-type users
+          kafka/bin/kafka-configs.sh --bootstrap-server $KAFKA_BROKER \
+            --describe --entity-type users --command-config kafka_admin.properties
