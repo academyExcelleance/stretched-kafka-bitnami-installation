@@ -10,8 +10,14 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-
+      - name: Restore Kafka from Cache
+        id: kafka-cache
+        uses: actions/cache@v3
+        with:
+          path: kafka
+          key: kafka-3.6.0
       - name: Install Kafka CLI
+        if: steps.kafka-cache.outputs.cache-hit != 'true'
         run: |
           wget https://archive.apache.org/dist/kafka/3.6.0/kafka_2.12-3.6.0.tgz
           tar -xzf kafka_2.12-3.6.0.tgz
@@ -38,5 +44,14 @@ jobs:
       - name: Verify Kafka User
         env:
           KAFKA_BROKER: ${{ secrets.KAFKA_BROKER }}
+          KAFKA_USER: ${{ secrets.KAFKA_USER }}
         run: |
-          kafka/bin/kafka-configs.sh --bootstrap-server $KAFKA_BROKER  --describe  --entity-type users --command-config kafka_admin.properties
+          USER_EXISTS=$(kafka/bin/kafka-configs.sh --bootstrap-server $KAFKA_BROKER \
+            --describe --entity-type users --command-config kafka_admin.properties | grep -w "$KAFKA_USER" || echo "")
+
+          if [[ -z "$USER_EXISTS" ]]; then
+            echo "❌ Kafka user $KAFKA_USER was NOT found!"
+            exit 1
+          else
+            echo "✅ Kafka user $KAFKA_USER successfully added!"
+          fi/kafka-configs.sh --bootstrap-server $KAFKA_BROKER  --describe  --entity-type users --command-config kafka_admin.properties
