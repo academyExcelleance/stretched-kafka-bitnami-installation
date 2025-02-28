@@ -22,6 +22,9 @@ ENV PATH="${KAFKA_HOME}/bin:${PATH}"
 COPY .github/workflows/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Copy the admin client properties file into the container
+COPY .github/workflows/admin_client.properties /opt/kafka/config/admin_client.properties
+
 # Copy the Kafka user management script
 WORKDIR /app
 COPY .github/workflows/manage_kafka_user.py .
