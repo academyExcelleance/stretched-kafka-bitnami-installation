@@ -19,7 +19,7 @@ RUN wget https://downloads.apache.org/kafka/${KAFKA_VERSION}/kafka_${SCALA_VERSI
 ENV PATH="${KAFKA_HOME}/bin:${PATH}"
 
 # Install Python dependencies
-COPY requirements.txt .
+COPY .github/workflows/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the Kafka user management script
