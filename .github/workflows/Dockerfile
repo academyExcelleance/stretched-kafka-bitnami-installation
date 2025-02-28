@@ -24,7 +24,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the Kafka user management script
 WORKDIR /app
-COPY manage_kafka_user.py .
+COPY .github/workflows/manage_kafka_user.py .
 
 # Default command (can be overridden in GitHub Actions)
 CMD ["python", "manage_kafka_user.py"]
