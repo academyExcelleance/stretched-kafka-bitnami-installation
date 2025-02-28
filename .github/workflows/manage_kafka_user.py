@@ -19,26 +19,28 @@ def execute_command(command):
         print(f"❌ Error executing command: {e.stderr}")
 
 def create_kafka_user():
-    """Creates a Kafka user with SCRAM-SHA-512 authentication."""
+    """Creates a Kafka user with SCRAM-SHA-512 authentication using admin credentials."""
     print(f"🚀 Creating Kafka user: {KAFKA_USER}")
 
     command = f"""
     {KAFKA_CONFIG_PATH} --bootstrap-server {KAFKA_BROKER} \
     --alter --add-config "SCRAM-SHA-512=[iterations=4096,password={KAFKA_PASSWORD}]" \
-    --entity-type users --entity-name {KAFKA_USER}
+    --entity-type users --entity-name {KAFKA_USER} \
+    --command-config /opt/kafka/config/admin_client.properties
     """
 
     execute_command(command)
     print(f"✅ Kafka user {KAFKA_USER} created successfully!")
 
 def delete_kafka_user():
-    """Deletes a Kafka user."""
+    """Deletes a Kafka user using admin credentials."""
     print(f"🗑️ Deleting Kafka user: {KAFKA_USER}")
 
     command = f"""
     {KAFKA_CONFIG_PATH} --bootstrap-server {KAFKA_BROKER} \
     --alter --delete-config "SCRAM-SHA-512" \
-    --entity-type users --entity-name {KAFKA_USER}
+    --entity-type users --entity-name {KAFKA_USER} \
+    --command-config /opt/kafka/config/admin_client.properties
     """
 
     execute_command(command)
