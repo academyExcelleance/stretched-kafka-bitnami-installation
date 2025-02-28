@@ -2,14 +2,6 @@ name: Create Kafka User
 
 on:
   workflow_dispatch:
-    inputs:
-      kafka_user:
-        description: 'Kafka Username'
-        required: true
-      kafka_password:
-        description: 'Kafka Password'
-        required: true
-
 jobs:
   create-user:
     runs-on: ubuntu-latest
@@ -26,8 +18,8 @@ jobs:
           KAFKA_BROKER: ${{ secrets.KAFKA_BROKER }}
           KAFKA_ADMIN_USER: ${{ secrets.KAFKA_ADMIN_USER }}
           KAFKA_ADMIN_PASSWORD: ${{ secrets.KAFKA_ADMIN_PASSWORD }}
-          KAFKA_USER: ${{ inputs.kafka_user }}
-          KAFKA_PASSWORD: ${{ inputs.kafka_password }}
+          KAFKA_USER: ${{ secrets.KAFKA_USER }}
+          KAFKA_PASSWORD: ${{ secrets.KAFKA_PASSWORD }}
         run: |
           docker run --rm \
             -e KAFKA_BROKER="${KAFKA_BROKER}" \
