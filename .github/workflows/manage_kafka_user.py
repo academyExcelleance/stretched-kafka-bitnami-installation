@@ -10,6 +10,8 @@ KAFKA_PASSWORD = os.getenv("KAFKA_PASSWORD")
 ACTION = os.getenv("ACTION")
 KAFKA_CONFIG_PATH = "/opt/kafka/bin/kafka-configs.sh"  # Path inside Docker
 
+print("KAFKA_ADMIN_USER",KAFKA_ADMIN_USER)
+print("KAFKA_USER",KAFKA_USER)
 def execute_command(command):
     """Executes a shell command and prints the output."""
     try:
