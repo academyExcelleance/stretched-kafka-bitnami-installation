@@ -10,10 +10,10 @@ ENV KAFKA_HOME=/opt/kafka
 RUN apt-get update && apt-get install -y wget openjdk-17-jdk
 
 # Download & extract Kafka
-RUN wget https://downloads.apache.org/kafka/${KAFKA_VERSION}/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz && \
-    tar -xzf kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz && \
-    mv kafka_${SCALA_VERSION}-${KAFKA_VERSION} ${KAFKA_HOME} && \
-    rm kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz
+RUN wget https://archive.apache.org/dist/kafka/3.6.0/kafka_2.12-3.6.0.tgz && \
+    tar -xzf kafka_2.12-3.6.0.tgz && \
+    mv kafka_2.12-3.6.0 ${KAFKA_HOME} && \
+    rm kafka_2.12-3.6.0.tgz
 
 # Add Kafka bin to PATH
 ENV PATH="${KAFKA_HOME}/bin:${PATH}"
