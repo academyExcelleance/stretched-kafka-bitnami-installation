@@ -7,7 +7,7 @@ ENV SCALA_VERSION=2.13
 ENV KAFKA_HOME=/opt/kafka
 
 # Install required packages
-RUN apt-get update && apt-get install -y wget openjdk-11-jdk
+RUN apt-get update && apt-get install -y wget openjdk-17-jdk
 
 # Download & extract Kafka
 RUN wget https://downloads.apache.org/kafka/${KAFKA_VERSION}/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz && \
