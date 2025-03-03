@@ -2,6 +2,16 @@ name: Create Kafka User
 
 on:
   workflow_dispatch:
+    inputs:
+      kafka_user:
+        description: 'Kafka Username'
+        required: true
+      kafka_password:
+        description: 'Kafka Password'
+        required: true
+      kafka_topic:
+        description: 'Kafka Topic'
+        required: true        
 jobs:
   create-user:
     runs-on: ubuntu-latest
