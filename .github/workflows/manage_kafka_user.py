@@ -1,12 +1,14 @@
 import os
 import subprocess
+import secrets
+import string
 
 # Load environment variables
 KAFKA_BROKER = os.getenv("KAFKA_BROKER")
 KAFKA_ADMIN_USER = os.getenv("KAFKA_ADMIN_USER")
 KAFKA_ADMIN_PASSWORD = os.getenv("KAFKA_ADMIN_PASSWORD")
 KAFKA_USER = os.getenv("KAFKA_USER")
-KAFKA_PASSWORD = os.getenv("KAFKA_PASSWORD")
+KAFKA_PASSWORD = os.getenv("KAFKA_PASSWORD", "").strip()  # Get and clean password
 KAFKA_TOPIC = os.getenv("KAFKA_TOPIC")
 ACTION = os.getenv("ACTION")
 KAFKA_CONFIG_PATH = "/opt/kafka/bin/kafka-configs.sh"  # Path inside Docker
@@ -15,13 +17,22 @@ KAFKA_ACL_PATH = "/opt/kafka/bin/kafka-acls.sh"  # ACL management script
 print("KAFKA_ADMIN_USER:", KAFKA_ADMIN_USER)
 print("KAFKA_USER:", KAFKA_USER)
 
+def generate_password(length=16):
+    characters = string.ascii_letters + string.digits + string.punctuation
+    return ''.join(secrets.choice(characters) for _ in range(length))
+
+# Auto-generate password if empty
+if not KAFKA_PASSWORD:
+    KAFKA_PASSWORD = generate_password()
+    print(f" Generated password for {KAFKA_USER}: {KAFKA_PASSWORD}")
+
 def execute_command(command):
     """Executes a shell command and prints the output."""
     try:
         result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
         print(result.stdout)
     except subprocess.CalledProcessError as e:
-        print(f"❌ Error executing command: {e.stderr}")
+        print(f" Error executing command: {e.stderr}")
 
 def create_kafka_user():
     """Creates a Kafka user with SCRAM-SHA-512 authentication using admin credentials."""
@@ -42,7 +53,7 @@ def create_kafka_user():
 
 def delete_kafka_user():
     """Deletes a Kafka user using admin credentials."""
-    print(f"Deleting Kafka user: {KAFKA_USER}")
+    print(f" Deleting Kafka user: {KAFKA_USER}")
 
     command = f"""
     {KAFKA_CONFIG_PATH} --bootstrap-server {KAFKA_BROKER} \
