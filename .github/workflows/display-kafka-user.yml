@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build Docker Image
-        run: docker build -t kafka-user-manager .
+        run: docker build -t kafka-user-manager -f .github/workflows/Dockerfile .
 
       - name: Run Kafka User Display
         run: docker run --rm \
