@@ -99,10 +99,50 @@ def revoke_kafka_permissions():
     execute_command(command)
     print(f" Permissions revoked for {KAFKA_USER} on {KAFKA_TOPIC}!")
 
+def get_kafka_user_credentials():
+    """Retrieves Kafka user credentials (SCRAM-SHA-512) for a specific user or all users."""
+    if KAFKA_USER:
+        print(f" Fetching credentials for user: {KAFKA_USER}")
+        command = f"""
+        {KAFKA_CONFIG_PATH} --bootstrap-server {KAFKA_BROKER} \
+        --describe --entity-type users --entity-name {KAFKA_USER} \
+        --command-config /opt/kafka/config/admin_client.properties
+        """
+    else:
+        print(f" Fetching credentials for all users")
+        command = f"""
+        {KAFKA_CONFIG_PATH} --bootstrap-server {KAFKA_BROKER} \
+        --describe --entity-type users \
+        --command-config /opt/kafka/config/admin_client.properties
+        """
+
+    execute_command(command)
+
+def get_kafka_user_acls():
+    """Retrieves Kafka ACLs for a specific user or all users."""
+    if KAFKA_USER:
+        print(f"🔍 Fetching ACLs for user: {KAFKA_USER}")
+        command = f"""
+        {KAFKA_ACL_PATH} --bootstrap-server {KAFKA_BROKER} \
+        --list --principal User:{KAFKA_USER} \
+        --command-config /opt/kafka/config/admin_client.properties
+        """
+    else:
+        print(f" Fetching ACLs for all users")
+        command = f"""
+        {KAFKA_ACL_PATH} --bootstrap-server {KAFKA_BROKER} \
+        --list --command-config /opt/kafka/config/admin_client.properties
+        """
+
+    execute_command(command)
+    
 if __name__ == "__main__":
     if ACTION == "create":
         create_kafka_user()
     elif ACTION == "delete":
         delete_kafka_user()
+    elif ACTION == "display":
+        get_kafka_user_credentials()
+        get_kafka_user_acls()        
     else:
-        print(" Invalid action! Use 'create' or 'delete'.")
+        print(" Invalid action! Use 'create' or 'delete' or 'display' .")
