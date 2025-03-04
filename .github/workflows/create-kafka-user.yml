@@ -8,7 +8,7 @@ on:
         required: true
       kafka_password:
         description: 'Kafka Password'
-        required: true
+        required: false
       kafka_topic:
         description: 'Kafka Topic'
         required: true        
