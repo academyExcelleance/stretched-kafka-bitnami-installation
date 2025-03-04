@@ -45,6 +45,7 @@ def create_kafka_user():
     --command-config /opt/kafka/config/admin_client.properties
     """
 
+    print(f"Command to create user: {command}")  
     execute_command(command)
     print(f" Kafka user {KAFKA_USER} created successfully!")
 
@@ -79,7 +80,7 @@ def grant_kafka_permissions():
     --topic {KAFKA_TOPIC} \
     --command-config /opt/kafka/config/admin_client.properties
     """
-
+    print(f"Command to create grant: {command}") 
     execute_command(command)
     print(f" Read/write permissions granted to {KAFKA_USER} on {KAFKA_TOPIC}!")
 
