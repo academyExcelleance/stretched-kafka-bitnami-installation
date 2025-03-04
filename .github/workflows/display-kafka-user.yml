@@ -18,7 +18,8 @@ jobs:
         run: docker build -t kafka-user-manager -f .github/workflows/Dockerfile .
 
       - name: Run Kafka User Display
-        run: docker run --rm \
+        run: |
+          docker run --rm \
           -e KAFKA_BROKER="${{ secrets.KAFKA_BROKER }}" \
           -e KAFKA_ADMIN_USER="${{ secrets.KAFKA_ADMIN_USER }}" \
           -e KAFKA_ADMIN_PASSWORD="${{ secrets.KAFKA_ADMIN_PASSWORD }}" \
