@@ -2,7 +2,10 @@ name: Display Kafka User Credentials & ACLs
 
 on:
   workflow_dispatch:  # Allows manual trigger
-
+    inputs:
+      kafka_user:
+        description: 'Kafka Username'
+        required: false
 jobs:
   display-kafka-user:
     runs-on: ubuntu-latest
