@@ -147,5 +147,24 @@ def get_kafka_user_acls():
         """
 
     execute_command(command)
+def update_kafka_permissions():
+    """Updates ACLs for an existing Kafka user."""
+    for access in ACCESS_LEVELS:
+        access = access.strip().upper()
+        if access not in ["READ", "WRITE", "ALL"]:
+            print(f"⚠️ Skipping invalid access level: {access}")
+            continue
 
+        print(f"🔐 Granting {access} access on topic '{KAFKA_TOPIC}' to user '{KAFKA_USER}'")
+
+        command = f"""
+        {KAFKA_ACL_PATH} --bootstrap-server {KAFKA_BROKER} \
+        --add --allow-principal User:{KAFKA_USER} \
+        --operation {access} \
+        --topic {KAFKA_TOPIC} \
+        --command-config /opt/kafka/config/admin_client.properties
+        """
+        execute_command(command)
+
+    print(f"✅ ACLs updated successfully for {KAFKA_USER}!")
 if __name__ == "__main__":
