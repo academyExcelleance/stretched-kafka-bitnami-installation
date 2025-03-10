@@ -1,4 +1,4 @@
-name: Create Kafka User
+name:Update Kafka User Access
 
 on:
   workflow_dispatch:
@@ -23,7 +23,7 @@ jobs:
       - name: Build Docker Image
         run: docker build -t kafka-user-manager -f .github/workflows/Dockerfile .
 
-      - name: Run Kafka User Creation
+      - name: Run Kafka User Access Modification
         env:
           KAFKA_BROKER: ${{ secrets.KAFKA_BROKER }}
           KAFKA_ADMIN_USER: ${{ secrets.KAFKA_ADMIN_USER }}
