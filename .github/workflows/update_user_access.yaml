@@ -38,6 +38,6 @@ jobs:
             -e KAFKA_ADMIN_PASSWORD="${KAFKA_ADMIN_PASSWORD}" \
             -e KAFKA_USER="${KAFKA_USER}" \
             -e KAFKA_TOPIC="${KAFKA_TOPIC}" \
-            -E ACCESS_LEVELS="${ACCESS_LEVELS}" \
+            -e ACCESS_LEVELS="${ACCESS_LEVELS}" \
             -e ACTION="update_user_access" \
             kafka-user-manager
