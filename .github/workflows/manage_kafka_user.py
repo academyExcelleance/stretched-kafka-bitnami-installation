@@ -169,13 +169,14 @@ def update_kafka_permissions():
     print(f"✅ ACLs updated successfully for {KAFKA_USER}!")
 if __name__ == "__main__":
     if ACTION == "create":
-         create_kafka_user()
-     elif ACTION == "delete":
-         delete_kafka_user()
-     elif ACTION == "display":
-         get_kafka_user_credentials()
-         get_kafka_user_acls()
-     elif ACTION == "update_user_access"
-         update_kafka_permissions()   
-     else:
-         print(" Invalid action! Use 'create' or 'delete' or 'display' .")
+        create_kafka_user()
+    elif ACTION == "delete":
+        delete_kafka_user()
+    elif ACTION == "display":
+        get_kafka_user_credentials()
+        get_kafka_user_acls()
+    elif ACTION == "update_user_access":
+        update_kafka_permissions()
+    else:
+        print("❌ Invalid action! Use 'create', 'delete', 'display', or 'update_user_access'.")
+
