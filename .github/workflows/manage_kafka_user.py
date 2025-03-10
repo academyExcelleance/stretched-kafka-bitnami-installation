@@ -175,7 +175,7 @@ if __name__ == "__main__":
      elif ACTION == "display":
          get_kafka_user_credentials()
          get_kafka_user_acls()
-     elif ACTION == "update_access"
+     elif ACTION == "update_user_access"
          update_kafka_permissions()   
      else:
          print(" Invalid action! Use 'create' or 'delete' or 'display' .")
