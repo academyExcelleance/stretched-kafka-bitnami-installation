@@ -1,4 +1,4 @@
-name:Update Kafka User Access
+name: Update Kafka User Access
 
 on:
   workflow_dispatch:
