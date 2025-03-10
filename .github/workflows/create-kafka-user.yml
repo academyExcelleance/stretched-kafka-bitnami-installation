@@ -11,7 +11,10 @@ on:
         required: false
       kafka_topic:
         description: 'Kafka Topic'
-        required: true        
+        required: true
+      access_level:
+        description: 'Select Access Level (comma-separated: READ,WRITE,ALL)'
+        required: true  
 jobs:
   create-user:
     runs-on: ubuntu-latest
@@ -31,6 +34,7 @@ jobs:
           KAFKA_USER: ${{ inputs.kafka_user }}
           KAFKA_PASSWORD: ${{ inputs.kafka_password }}
           KAFKA_TOPIC: ${{ inputs.kafka_topic }}
+          ACCESS_LEVELS:  ${{ inputs.access_level }} 
         run: |
           docker run --rm \
             -e KAFKA_BROKER="${KAFKA_BROKER}" \
@@ -38,6 +42,7 @@ jobs:
             -e KAFKA_ADMIN_PASSWORD="${KAFKA_ADMIN_PASSWORD}" \
             -e KAFKA_USER="${KAFKA_USER}" \
             -e KAFKA_TOPIC="${KAFKA_TOPIC}" \
+            -E ACCESS_LEVELS="${ACCESS_LEVELS}" \
             -e KAFKA_PASSWORD="${KAFKA_PASSWORD}" \
             -e ACTION="create" \
             kafka-user-manager
