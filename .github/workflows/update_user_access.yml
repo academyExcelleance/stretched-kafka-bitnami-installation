@@ -13,7 +13,7 @@ on:
         description: 'Select Access Level (comma-separated: READ,WRITE,ALL)'
         required: true  
 jobs:
-  update-user_access:
+  update-user-access:
     runs-on: ubuntu-latest
 
     steps:
