@@ -2,6 +2,11 @@ import os
 import subprocess
 import secrets
 import string
+from kafka import KafkaProducer
+from cryptography.fernet import Fernet
+import json
+import base64
+
 
 # Load environment variables
 KAFKA_BROKER = os.getenv("KAFKA_BROKER")
