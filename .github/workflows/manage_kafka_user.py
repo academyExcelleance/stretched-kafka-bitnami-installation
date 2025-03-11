@@ -173,6 +173,7 @@ sasl_config = {
     "sasl_plain_password": KAFKA_ADMIN_PASSWORD
 }
 def consume_kafka_credentials():
+    print("consume_kafka_credentials")
     """Consumes Kafka credentials and prints in JSON format."""
     consumer = KafkaConsumer(
         "credential_details",
