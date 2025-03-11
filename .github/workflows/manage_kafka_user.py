@@ -167,18 +167,18 @@ sasl_config = {
     "bootstrap_servers": KAFKA_BROKER,
     "security_protocol": "SASL_PLAINTEXT",
     "sasl_mechanism": "SCRAM-SHA-512",
-    "sasl_plain_username": KAFKA_USER,
-    "sasl_plain_password": KAFKA_PASSWORD
+    "sasl_plain_username": KAFKA_ADMIN_USER,
+    "sasl_plain_password": KAFKA_ADMIN_PASSWORD
 }
 def consume_kafka_credentials():
     """Consumes Kafka credentials and prints in JSON format."""
     consumer = KafkaConsumer(
-        KAFKA_TOPIC,
+        "credential_details",
         bootstrap_servers=KAFKA_BROKER,
         security_protocol="SASL_PLAINTEXT",
         sasl_mechanism="SCRAM-SHA-256",
-        sasl_plain_username=os.getenv("KAFKA_USER"),
-        sasl_plain_password=os.getenv("KAFKA_PASSWORD"),
+        sasl_plain_username=KAFKA_ADMIN_USER,
+        sasl_plain_password=KAFKA_ADMIN_PASSWORD,
         auto_offset_reset="earliest",
         value_deserializer=lambda v: json.loads(v.decode("utf-8"))
     )
