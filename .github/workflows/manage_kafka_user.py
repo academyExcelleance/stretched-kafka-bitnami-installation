@@ -153,21 +153,34 @@ def decrypt_password(encrypted_password):
     """Decrypts an encrypted password."""
     return fernet.decrypt(encrypted_password.encode()).decode()
 
+sasl_config = {
+    "bootstrap_servers": KAFKA_BROKER,
+    "security_protocol": "SASL_PLAINTEXT",
+    "sasl_mechanism": "SCRAM-SHA-256",
+    "sasl_plain_username": KAFKA_USER,
+    "sasl_plain_password": KAFKA_PASSWORD
+}
 def send_kafka_credentials():
     """Sends encrypted user credentials as a JSON message to Kafka topic `credential_details`."""
     producer = KafkaProducer(
-        bootstrap_servers=KAFKA_BROKER,
+        bootstrap_servers=sasl_config["bootstrap_servers"],
+        security_protocol=sasl_config["security_protocol"],
+        sasl_mechanism=sasl_config["sasl_mechanism"],
+        sasl_plain_username=sasl_config["sasl_plain_username"],
+        sasl_plain_password=sasl_config["sasl_plain_password"],
         value_serializer=lambda v: json.dumps(v).encode('utf-8')
     )
-
     encrypted_password = encrypt_password(KAFKA_PASSWORD)
-
+    
     credentials_message = {
         "user": KAFKA_USER,
-        "password": encrypted_password,  # Send encrypted password
+        "password": encrypted_password,  # Encrypted password
         "topic": KAFKA_TOPIC,
         "access": ACCESS_LEVELS
     }
+
+    
+
 
     print(f"📤 Sending encrypted credentials to topic `credential_details`: {credentials_message}")
 
