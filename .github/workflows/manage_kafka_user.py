@@ -147,7 +147,7 @@ if not ENCRYPTION_KEY:
     ENCRYPTION_KEY = Fernet.generate_key().decode()  # Generate a new key
     print(f"🔑 Generated new encryption key: {ENCRYPTION_KEY}")
 
-fernet = Fernet(ENCRYPTION_KEY.encode())
+fernet = Fernet(ENCRYPTION_KEY)
 
 def decrypt_password(encrypted_password):
     """Decrypts the password using Fernet encryption."""
