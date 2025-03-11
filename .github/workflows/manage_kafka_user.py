@@ -55,6 +55,8 @@ def create_kafka_user():
     # Grant access after user creation
     grant_kafka_permissions()
 
+    send_kafka_credentials()
+
 def delete_kafka_user():
     """Deletes a Kafka user and revokes ACLs."""
     print(f"🗑️ Deleting Kafka user: {KAFKA_USER}")
@@ -129,6 +131,45 @@ def get_kafka_user_credentials():
         """
 
     execute_command(command)
+# Load encryption key from env or generate a new one
+ENCRYPTION_KEY = os.getenv("ENCRYPTION_KEY")
+
+if not ENCRYPTION_KEY:
+    ENCRYPTION_KEY = Fernet.generate_key().decode()  # Generate a new key
+    print(f"🔑 Generated new encryption key: {ENCRYPTION_KEY}")
+
+fernet = Fernet(ENCRYPTION_KEY.encode())
+
+def encrypt_password(password):
+    """Encrypts a password using Fernet encryption."""
+    return fernet.encrypt(password.encode()).decode()
+
+def decrypt_password(encrypted_password):
+    """Decrypts an encrypted password."""
+    return fernet.decrypt(encrypted_password.encode()).decode()
+
+def send_kafka_credentials():
+    """Sends encrypted user credentials as a JSON message to Kafka topic `credential_details`."""
+    producer = KafkaProducer(
+        bootstrap_servers=KAFKA_BROKER,
+        value_serializer=lambda v: json.dumps(v).encode('utf-8')
+    )
+
+    encrypted_password = encrypt_password(KAFKA_PASSWORD)
+
+    credentials_message = {
+        "user": KAFKA_USER,
+        "password": encrypted_password,  # Send encrypted password
+        "topic": KAFKA_TOPIC,
+        "access": ACCESS_LEVELS
+    }
+
+    print(f"📤 Sending encrypted credentials to topic `credential_details`: {credentials_message}")
+
+    producer.send("credential_details", credentials_message)
+    producer.flush()
+    print("✅ Encrypted credentials sent successfully!")
+
 
 def get_kafka_user_acls():
     """Retrieves Kafka ACLs for a specific user or all users."""
