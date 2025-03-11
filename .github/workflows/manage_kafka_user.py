@@ -17,6 +17,8 @@ KAFKA_PASSWORD = os.getenv("KAFKA_PASSWORD", "").strip()
 KAFKA_TOPIC = os.getenv("KAFKA_TOPIC")
 ACCESS_LEVELS = os.getenv("ACCESS_LEVELS", "READ,WRITE").split(",")  # Default to READ,WRITE if empty
 ACTION = os.getenv("ACTION")
+ENCRYPTION_KEY = os.getenv("ENCRYPTION_KEY")
+
 
 KAFKA_CONFIG_PATH = "/opt/kafka/bin/kafka-configs.sh"
 KAFKA_ACL_PATH = "/opt/kafka/bin/kafka-acls.sh"
@@ -145,6 +147,14 @@ if not ENCRYPTION_KEY:
 
 fernet = Fernet(ENCRYPTION_KEY.encode())
 
+def decrypt_password(encrypted_password):
+    """Decrypts the password using Fernet encryption."""
+    try:
+        return fernet.decrypt(encrypted_password.encode()).decode()
+    except Exception as e:
+        print(f"❌ Error decrypting password: {e}")
+        return None
+
 def encrypt_password(password):
     """Encrypts a password using Fernet encryption."""
     return fernet.encrypt(password.encode()).decode()
@@ -160,6 +170,34 @@ sasl_config = {
     "sasl_plain_username": KAFKA_USER,
     "sasl_plain_password": KAFKA_PASSWORD
 }
+def consume_kafka_credentials():
+    """Consumes Kafka credentials and prints in JSON format."""
+    consumer = KafkaConsumer(
+        KAFKA_TOPIC,
+        bootstrap_servers=KAFKA_BROKER,
+        security_protocol="SASL_PLAINTEXT",
+        sasl_mechanism="SCRAM-SHA-256",
+        sasl_plain_username=os.getenv("KAFKA_USER"),
+        sasl_plain_password=os.getenv("KAFKA_PASSWORD"),
+        auto_offset_reset="earliest",
+        value_deserializer=lambda v: json.loads(v.decode("utf-8"))
+    )
+
+    print("📥 Waiting for messages from Kafka...")
+    for message in consumer:
+        credentials = message.value
+        decrypted_password = decrypt_password(credentials["password"])
+
+        if decrypted_password:
+            output_json = {
+                "user": credentials["user"],
+                "password": decrypted_password,
+                "topic": credentials["topic"],
+                "access": credentials["access"]
+            }
+
+            print(json.dumps(output_json, indent=4))  # Pretty-print JSON output
+
 def send_kafka_credentials():
     """Sends encrypted user credentials as a JSON message to Kafka topic `credential_details`."""
     producer = KafkaProducer(
@@ -232,8 +270,7 @@ if __name__ == "__main__":
     elif ACTION == "delete":
         delete_kafka_user()
     elif ACTION == "display":
-        get_kafka_user_credentials()
-        get_kafka_user_acls()
+        consume_kafka_credentials()        
     elif ACTION == "update_user_access":
         update_kafka_permissions()
     else:
