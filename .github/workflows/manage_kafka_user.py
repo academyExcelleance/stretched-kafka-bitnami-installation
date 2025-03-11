@@ -156,7 +156,7 @@ def decrypt_password(encrypted_password):
 sasl_config = {
     "bootstrap_servers": KAFKA_BROKER,
     "security_protocol": "SASL_PLAINTEXT",
-    "sasl_mechanism": "SCRAM-SHA-256",
+    "sasl_mechanism": "SCRAM-SHA-512",
     "sasl_plain_username": KAFKA_USER,
     "sasl_plain_password": KAFKA_PASSWORD
 }
